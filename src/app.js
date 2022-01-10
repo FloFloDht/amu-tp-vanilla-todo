@@ -1,7 +1,12 @@
 // src/app.js
+import { applyRouting } from "./routing.js";
 
 // Dès le chargement des élements du DOM
 document.addEventListener("DOMContentLoaded", () => {
+  // On applique le routage par rapport au pathname (tout ce qui vient après le nom de domaine)
+  // Exemple : /12/details
+  applyRouting(window.location.pathname);
+
   // On appelle l'API pour récupérer les tâches
   loadTodoItemsFromApi().then((items) => {
     // Pour chaque tâche, on l'affiche dans l'interface
