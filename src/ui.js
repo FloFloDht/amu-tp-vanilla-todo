@@ -1,6 +1,5 @@
 // src/ui.js
 
-
 /**
  * Permet d'ajouter visuellement une tâche dans l'interface
  * @param {{id: number, text: string, done: boolean}} item
@@ -146,9 +145,9 @@ export const displayTodoDetails = (id) => {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
-  import {
-    loadTodoItemsFromApi,
-    toggleComplete,
-    saveTodoItemToApi,
-    loadTodoItemFromApi,
-  } from "./api.js";
+import {
+  loadTodoItemsFromApi,
+  toggleComplete,
+  saveTodoItemToApi,
+  loadTodoItemFromApi,
+} from "./api.js";
