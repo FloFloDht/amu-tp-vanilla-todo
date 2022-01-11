@@ -1,5 +1,6 @@
 // src/ui.js
 
+
 /**
  * Permet d'ajouter visuellement une tâche dans l'interface
  * @param {{id: number, text: string, done: boolean}} item
@@ -19,8 +20,11 @@
     `
   );
   document
-      .querySelector("input#todo-" + item.id)
-      .addEventListener("click", onClickCheckbox);
+    .querySelector("input#todo-" + item.id)
+    .addEventListener("click", onClickCheckbox);
+  document
+    .querySelector('a#goto-' + item.id)
+    .addEventListener('click', onClickLink);
   };
   
   /**
@@ -46,6 +50,28 @@
       // Il faudra alors ajouter la gestion du submit du <form>
       document.querySelector("form").addEventListener("submit", onSubmitForm);
   };
+
+  /**
+ * Affiche dans l'interface le détails d'une tâche
+ * @param {number} id 
+ */
+export const displayTodoDetails = (id) => {
+  // On appelle l'API afin de récupérer une tâche
+  loadTodoItemFromApi(id).then((item) => {
+      // On injecte du HTML dans le <main> 
+      // (supprimant donc ce qu'il contient à ce stade)
+      document.querySelector("main").innerHTML = `
+              <h2>Détails de la tâche ${item.id}</h2>
+              <p><strong>Texte :</strong> ${item.text}</p>
+              <p><strong>Status : </strong> ${item.done ? "Complété" : "A faire"}</p>
+              <a id="back" href="/">Retour à la liste</a>
+          `;
+      
+      // On n'oublie pas que le lien doit être géré par le routeur
+      document.querySelector('a#back')
+          .addEventListener('click', onClickLink);
+  });
+};
   
   /**
    * Gestion du formulaire d'ajout d'une tâche
@@ -101,8 +127,28 @@
     });
   };
 
+/**
+ * Gestion du click sur un lien
+ * @param {MouseEvent} e 
+ */
+ const onClickLink = (e) => {
+  // On empêche le comportement par défaut de l'événement
+  // qui reviendrait à réellement naviguer vers l'URL
+  e.preventDefault();
+
+  // On récupère l'URL du lien
+  const href = e.target.href;
+
+  // On ajoute à l'historique du navigateur ce lien (et par là même, on modifie l'URL dans la barre d'adresse)
+  window.history.pushState({}, '', href);
+
+  // On déclenche manuellement un événement popstate afin que le routeur soit conscient qu'il doit retravailler
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
   import {
     loadTodoItemsFromApi,
     toggleComplete,
     saveTodoItemToApi,
+    loadTodoItemFromApi,
   } from "./api.js";
